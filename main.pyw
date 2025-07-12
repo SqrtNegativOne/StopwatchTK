@@ -7,7 +7,6 @@ from enum import Enum
 import logging.config
 from json import load
 from ctypes import windll
-from typing import Iterator
 from pathlib import Path
 
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
@@ -191,7 +190,7 @@ class Stopwatch(tk.Tk):
                 # Not allowed to pause in a breaking state. Feature, not a bug!
                 play_sound(ERROR_SOUND_PATH)
             case _:
-                raise WTFError(f'the state isn\'t supposed to be {self.state} wtf is this shit you stupid fucking cunt delete urself')
+                raise WTFError(f'Invalid state: {self.state}')
     
     # TODO: Handle all switch states with a switch state function, which automatically changes the colour of the label as well?
 
@@ -235,7 +234,7 @@ class Stopwatch(tk.Tk):
             case State.STOPPED:
                 self.label.config(fg=LABEL_STOPPED_COLOUR)
             case _:
-                raise WTFError(f'the state isn\'t supposed to be {self.state} wtf is this')
+                raise WTFError(f'Invalid state: {self.state}')
     """
 
     def run(self) -> None:
@@ -277,7 +276,7 @@ class Stopwatch(tk.Tk):
         if DEBUG_MODE:
             logger.info(f"Break with {t.total_seconds()} seconds initialised.")
         with open(PROGRESS_CSV_PATH, 'w') as csvf:
-            writer: Iterator = csv.writer(csvf, delimiter=',')
+            writer = csv.writer(csvf, delimiter=',')
             writer.writerow((datetime.now().isoformat(), f"{t.total_seconds()}"))
     
     def message(self) -> None: # TODO: If this function turns out to be small enough, just fit it in start_stop_break
