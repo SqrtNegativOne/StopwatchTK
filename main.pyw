@@ -8,10 +8,11 @@ from datetime import datetime, timedelta
 from enum import Enum
 import logging.config
 from json import load
-from ctypes import windll
 from pathlib import Path
 
 from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
+windll.shcore.SetProcessDpiAwareness(1) # Makes the font look cleaner using anti-alliasing probably.
+# Also changes my window size for some reason; I was wondering why suddenly switching to classes made my stopwatch look weirder.
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
 
@@ -66,9 +67,6 @@ ERROR_SOUND_PATH = BASE_DIR / "assets" / "windows-xp-error.mp3"
 STOPWATCH_FONT_PATH = BASE_DIR / "assets" / "Seven Segment.ttf"
 
 STOPWATCH_FONT: tuple[str, int, str] = ('Fs Sevegment', 40, 'normal')
-
-windll.shcore.SetProcessDpiAwareness(1) # Makes the font look cleaner using anti-alliasing probably.
-# Also changes my window size for some reason; I was wondering why suddenly switching to classes made my stopwatch look weirder.
 
 
 with open(LOGGING_CONFIG_PATH, 'r') as config_file:
