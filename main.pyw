@@ -92,9 +92,6 @@ class State(Enum):
 
 class Stopwatch(tk.Tk):
     # __slots__ = 'state', 'hiding', 'start_time', 'label', 'x', 'y'
-    # Run mypy with strict mode on before enabling the above.
-    # https://mypy.readthedocs.io/en/stable/getting_started.html
-    # https://marketplace.visualstudio.com/items?itemName=ms-python.mypy-type-checker
     
     def __init__(self, *args, **kwargs) -> None:
         logger.info('Stopwatch initialised.')
