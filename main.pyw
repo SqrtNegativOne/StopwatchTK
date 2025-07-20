@@ -1,7 +1,9 @@
 import tkinter as tk
 import csv
-try: from pygame import mixer
-except ModuleNotFoundError: pass
+try:
+    from pygame import mixer
+except ModuleNotFoundError:
+    mixer = None
 from datetime import datetime, timedelta
 from enum import Enum
 import logging.config
@@ -323,9 +325,10 @@ class Message(tk.Toplevel):
     def __init__(self, master, *args, **kwargs) -> None:
         tk.Toplevel.__init__(master, *args, **kwargs)
 """
-
-
 def play_sound(sound_path) -> None:
+    if mixer is None:
+        logger.error("pygame.mixer is not available.")
+        return
     try:
         mixer.init()
         mixer.music.load(sound_path)
@@ -333,7 +336,6 @@ def play_sound(sound_path) -> None:
         mixer.music.play()
     except Exception as message:
         logger.error(message)
-
 
 def main() -> None:
     Stopwatch().mainloop()
