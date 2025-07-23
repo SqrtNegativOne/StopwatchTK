@@ -1,7 +1,7 @@
 import tkinter as tk
 import csv
 try:
-    from pygame import mixer
+    from pygame import mixer # type: ignore
 except ModuleNotFoundError:
     mixer = None
 from datetime import datetime, timedelta
@@ -10,12 +10,12 @@ import logging.config
 from json import load
 from pathlib import Path
 
-from ctypes import windll, byref, create_unicode_buffer, create_string_buffer
-windll.shcore.SetProcessDpiAwareness(1) # Makes the font look cleaner using anti-alliasing probably.
-# Also changes my window size for some reason; I was wondering why suddenly switching to classes made my stopwatch look weirder.
+from ctypes import windll
+windll.shcore.SetProcessDpiAwareness(1) # Updates all screen and window resolutions by ×1.5. Required for cleaner fonts.
+
+from ctypes import byref, create_string_buffer, create_unicode_buffer
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
-
 def loadfont(fontpath, private=True, enumerable=False):
     '''
     Makes fonts located in file `fontpath` available to the font system.
@@ -29,8 +29,7 @@ def loadfont(fontpath, private=True, enumerable=False):
     '''
     # This function was taken from
     # https://github.com/ifwe/digsby/blob/f5fe00244744aa131e07f09348d10563f3d8fa99/digsby/src/gui/native/win/winfonts.py#L15
-    # This function is written for Python 2.x. For 3.x, you
-    # have to convert the isinstance checks to bytes and str
+    # and modified for Python 3.x
     if isinstance(fontpath, bytes):
         pathbuf = create_string_buffer(fontpath)
         AddFontResourceEx = windll.gdi32.AddFontResourceExA
@@ -43,20 +42,22 @@ def loadfont(fontpath, private=True, enumerable=False):
     flags = (FR_PRIVATE if private else 0) | (FR_NOT_ENUM if not enumerable else 0)
     numFontsAdded = AddFontResourceEx(byref(pathbuf), flags, 0)
     return bool(numFontsAdded)
-loadfont(r"C:\Users\arkma\Sqrt-1\putting the pro in programming\unnecessarily professional tkinter stopwatch v2\assets\fs-sevegment\fs-sevegment.ttf")
 
 DEBUG_MODE = False #########################################
 
 DEFAULT_ALPHA: float = 0.93
 HIDING_ALPHA: float = 0.20
+
 STOPWATCH_BACKGROUND: str = '#181818'
 LABEL_PAUSED_COLOUR: str = 'grey'
 LABEL_RUNNING_COLOUR: str = 'white'
 LABEL_BREAKING_COLOUR: str = '#2ecc71' # green
 LABEL_STOPPED_COLOUR: str = '#e74c3c' # red
+
 LONG_BREAK_DIVISOR: float = 3.5
 SHORT_BREAK_DIVISOR: float = 5
 BREAK_CUTOFF_SECONDS: float = 5 * 60 # You need to have studied at least that many seconds to start a break.
+
 MESSAGES: list[str] = ['Bitte trinkt wasser', 'Go outside, eat an apple, and touch grass or something']
 
 BASE_DIR = Path(__file__).parent
@@ -67,6 +68,8 @@ ERROR_SOUND_PATH = BASE_DIR / "assets" / "windows-xp-error.mp3"
 STOPWATCH_FONT_PATH = BASE_DIR / "assets" / "Seven Segment.ttf"
 
 STOPWATCH_FONT: tuple[str, int, str] = ('Fs Sevegment', 40, 'normal')
+
+ERROR_STRING: str = 'ẽ̸̛̝̘͈͔͓͇̓͗̒̀͐̄̒̄̏̄͘͜͜͝͝͠͝ͅR̶͉͙̹̩̘̳̯̜̘͉̯̠̾̑̐́̊̂͗͑͐͑̅̕̕R̴͕͍̓0̸̢̡̭͚̟̫̓̆̊͠R̸̤̗̘̻͒̃̈̃̓̊̐̀̎̊͋̚'
 
 
 with open(LOGGING_CONFIG_PATH, 'r') as config_file:
@@ -104,7 +107,7 @@ class Stopwatch(tk.Tk):
         self.minsize(width=200, height=70)
         self.geometry('+0+800')
         
-
+        loadfont(STOPWATCH_FONT_PATH)
         self.label: tk.Label = tk.Label(
             self,
             text='00',
@@ -139,8 +142,8 @@ class Stopwatch(tk.Tk):
         self.y = 0
         self.bind('<Button-1>', self.click)
         self.bind('<B1-Motion>', self.drag)
-        self.bind('<Enter>', (lambda event: self.hover()))
-        self.bind('<Leave>', (lambda event: self.mouse_leave()))
+        self.bind('<Enter>', self.hover)
+        self.bind('<Leave>', self.mouse_leave)
     
     def click(self, event) -> None:
         self.x = event.x
@@ -150,13 +153,13 @@ class Stopwatch(tk.Tk):
     def drag(self, event) -> None:
         x = event.x - self.x + self.winfo_x()
         y = event.y - self.y + self.winfo_y()
-        self.geometry("+%s+%s" % (x , y))
+        self.geometry(f'+{x}+{y}')
         self.attributes('-alpha', self.alpha-0.15)
 
-    def mouse_leave(self) -> None:
+    def mouse_leave(self, event) -> None:
         self.attributes('-alpha', self.alpha)
     
-    def hover(self) -> None:
+    def hover(self, event) -> None:
         self.attributes('-alpha', self.alpha-0.15)
 
     def hide(self) -> None:
@@ -259,7 +262,7 @@ class Stopwatch(tk.Tk):
     @staticmethod
     def format_count(t: timedelta) -> str:
         if t.days < 0:
-            return 'ẽ̸̛̝̘͈͔͓͇̓͗̒̀͐̄̒̄̏̄͘͜͜͝͝͠͝ͅR̶͉͙̹̩̘̳̯̜̘͉̯̠̾̑̐́̊̂͗͑͐͑̅̕̕R̴͕͍̓0̸̢̡̭͚̟̫̓̆̊͠R̸̤̗̘̻͒̃̈̃̓̊̐̀̎̊͋̚' # fnuny
+            return ERROR_STRING # fnuny
         
         if DEBUG_MODE:
             return str(int(t.total_seconds() // 1))
