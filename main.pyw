@@ -1,5 +1,4 @@
 from loguru import logger
-logger.add('log.log')
 
 import tkinter as tk
 import csv
@@ -65,6 +64,9 @@ PROGRESS_CSV_PATH = BASE_DIR / "data" / "progress.csv"
 BREAK_OVER_SOUND_PATH = BASE_DIR / "assets" / "wine-glass-alarm.ogg"
 ERROR_SOUND_PATH = BASE_DIR / "assets" / "windows-xp-error.mp3"
 STOPWATCH_FONT_PATH = BASE_DIR / "assets" / "Seven Segment.ttf"
+LOG_PATH = BASE_DIR / "log.log"
+
+logger.add(LOG_PATH)
 
 STOPWATCH_FONT: tuple[str, int, str] = ('Fs Sevegment', 40, 'normal')
 
