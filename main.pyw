@@ -16,7 +16,7 @@ windll.shcore.SetProcessDpiAwareness(1) # Updates all screen and window resoluti
 from ctypes import byref, create_string_buffer, create_unicode_buffer
 FR_PRIVATE  = 0x10
 FR_NOT_ENUM = 0x20
-def loadfont(fontpath, private=True, enumerable=False):
+def loadfont(fontpath: bytes | str, private=True, enumerable=False):
     '''
     Makes fonts located in file `fontpath` available to the font system.
 
