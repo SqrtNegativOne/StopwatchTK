@@ -13,10 +13,10 @@ from pathlib import Path
 from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1) # Updates all screen and window resolutions by ×1.5. Required for cleaner fonts.
 
-from ctypes import byref, create_string_buffer, create_unicode_buffer
-FR_PRIVATE  = 0x10
-FR_NOT_ENUM = 0x20
 def loadfont(fontpath: bytes | str, private=True, enumerable=False):
+    from ctypes import byref, create_string_buffer, create_unicode_buffer
+    FR_PRIVATE  = 0x10
+    FR_NOT_ENUM = 0x20
     '''
     Makes fonts located in file `fontpath` available to the font system.
 
@@ -25,7 +25,6 @@ def loadfont(fontpath: bytes | str, private=True, enumerable=False):
     `enumerable`  if True, this font will appear when enumerating fonts
 
     See https://msdn.microsoft.com/en-us/library/dd183327(VS.85).aspx
-
     '''
     # This function was taken from
     # https://github.com/ifwe/digsby/blob/f5fe00244744aa131e07f09348d10563f3d8fa99/digsby/src/gui/native/win/winfonts.py#L15
