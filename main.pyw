@@ -1,3 +1,6 @@
+from loguru import logger
+logger.add('log.log')
+
 import tkinter as tk
 import csv
 try:
@@ -6,8 +9,6 @@ except ModuleNotFoundError:
     mixer = None
 from datetime import datetime, timedelta
 from enum import Enum
-import logging.config
-from json import load
 from pathlib import Path
 
 from ctypes import windll
@@ -60,7 +61,6 @@ BREAK_CUTOFF_SECONDS: float = 5 * 60 # You need to have studied at least that ma
 MESSAGES: list[str] = ['Bitte trinkt wasser', 'Go outside, eat an apple, and touch grass or something']
 
 BASE_DIR = Path(__file__).parent
-LOGGING_CONFIG_PATH = BASE_DIR / "data" / "logging_config.json"
 PROGRESS_CSV_PATH = BASE_DIR / "data" / "progress.csv"
 BREAK_OVER_SOUND_PATH = BASE_DIR / "assets" / "wine-glass-alarm.ogg"
 ERROR_SOUND_PATH = BASE_DIR / "assets" / "windows-xp-error.mp3"
@@ -69,11 +69,6 @@ STOPWATCH_FONT_PATH = BASE_DIR / "assets" / "Seven Segment.ttf"
 STOPWATCH_FONT: tuple[str, int, str] = ('Fs Sevegment', 40, 'normal')
 
 ERROR_STRING: str = 'ẽ̸̛̝̘͈͔͓͇̓͗̒̀͐̄̒̄̏̄͘͜͜͝͝͠͝ͅR̶͉͙̹̩̘̳̯̜̘͉̯̠̾̑̐́̊̂͗͑͐͑̅̕̕R̴͕͍̓0̸̢̡̭͚̟̫̓̆̊͠R̸̤̗̘̻͒̃̈̃̓̊̐̀̎̊͋̚'
-
-
-with open(LOGGING_CONFIG_PATH, 'r') as config_file:
-    logging.config.dictConfig(load(config_file))
-logger = logging.getLogger(__name__)
 
 
 class WTFError(Exception):
