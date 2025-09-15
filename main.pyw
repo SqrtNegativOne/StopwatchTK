@@ -107,7 +107,7 @@ class Stopwatch(tk.Tk):
         self.minsize(width=200, height=70)
         self.geometry('+0+800')
         
-        loadfont(STOPWATCH_FONT_PATH)
+        loadfont(str(STOPWATCH_FONT_PATH))
         self.label: tk.Label = tk.Label(
             self,
             text='00',
