@@ -68,7 +68,11 @@ LOG_PATH = BASE_DIR / "log.log"
 
 logger.add(LOG_PATH)
 
-STOPWATCH_FONT: tuple[str, int, str] = ('Fs Sevegment', 40, 'normal')
+loadfont(str(STOPWATCH_FONT_PATH))
+WIDTH = 150
+HEIGHT = 0
+STOPWATCH_FONT: tuple[str, int, str] = ('IBM Plex Sans', 30, 'normal')
+
 
 ERROR_STRING: str = 'ẽ̸̛̝̘͈͔͓͇̓͗̒̀͐̄̒̄̏̄͘͜͜͝͝͠͝ͅR̶͉͙̹̩̘̳̯̜̘͉̯̠̾̑̐́̊̂͗͑͐͑̅̕̕R̴͕͍̓0̸̢̡̭͚̟̫̓̆̊͠R̸̤̗̘̻͒̃̈̃̓̊̐̀̎̊͋̚'
 
@@ -100,7 +104,7 @@ class Stopwatch(tk.Tk):
         self.config(bg=STOPWATCH_BACKGROUND)
         self.alpha: float = DEFAULT_ALPHA
         self.attributes('-alpha', self.alpha)
-        self.minsize(width=200, height=70)
+        self.minsize(width=WIDTH, height=HEIGHT)
         self.geometry('+0+800')
         
         loadfont(str(STOPWATCH_FONT_PATH))
