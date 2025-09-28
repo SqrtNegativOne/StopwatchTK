@@ -12,35 +12,7 @@ from pathlib import Path
 
 from ctypes import windll
 windll.shcore.SetProcessDpiAwareness(1) # Updates all screen and window resolutions by ×1.5. Required for cleaner fonts.
-
-def loadfont(fontpath: bytes | str, private=True, enumerable=False):
-    from ctypes import byref, create_string_buffer, create_unicode_buffer
-    FR_PRIVATE  = 0x10
-    FR_NOT_ENUM = 0x20
-    '''
-    Makes fonts located in file `fontpath` available to the font system.
-
-    `private`     if True, other processes cannot see this font, and this
-                  font will be unloaded when the process dies
-    `enumerable`  if True, this font will appear when enumerating fonts
-
-    See https://msdn.microsoft.com/en-us/library/dd183327(VS.85).aspx
-    '''
-    # This function was taken from
-    # https://github.com/ifwe/digsby/blob/f5fe00244744aa131e07f09348d10563f3d8fa99/digsby/src/gui/native/win/winfonts.py#L15
-    # and modified for Python 3.x
-    if isinstance(fontpath, bytes):
-        pathbuf = create_string_buffer(fontpath)
-        AddFontResourceEx = windll.gdi32.AddFontResourceExA
-    elif isinstance(fontpath, str):
-        pathbuf = create_unicode_buffer(fontpath)
-        AddFontResourceEx = windll.gdi32.AddFontResourceExW
-    else:
-        raise TypeError('fontpath must be of type str or unicode')
-
-    flags = (FR_PRIVATE if private else 0) | (FR_NOT_ENUM if not enumerable else 0)
-    numFontsAdded = AddFontResourceEx(byref(pathbuf), flags, 0)
-    return bool(numFontsAdded)
+windll.kernel32.SetConsoleTitleW("StopwatchTK") # Changes the title of the console window, if it exists.
 
 DEBUG_MODE = False #########################################
 
@@ -68,10 +40,9 @@ LOG_PATH = BASE_DIR / "log.log"
 
 logger.add(LOG_PATH)
 
-loadfont(str(STOPWATCH_FONT_PATH))
 WIDTH = 150
 HEIGHT = 0
-STOPWATCH_FONT: tuple[str, int, str] = ('IBM Plex Sans', 30, 'normal')
+STOPWATCH_FONT: tuple[str, int, str] = ('Consolas', 30, 'normal')
 
 
 ERROR_STRING: str = 'ẽ̸̛̝̘͈͔͓͇̓͗̒̀͐̄̒̄̏̄͘͜͜͝͝͠͝ͅR̶͉͙̹̩̘̳̯̜̘͉̯̠̾̑̐́̊̂͗͑͐͑̅̕̕R̴͕͍̓0̸̢̡̭͚̟̫̓̆̊͠R̸̤̗̘̻͒̃̈̃̓̊̐̀̎̊͋̚'
@@ -107,7 +78,6 @@ class Stopwatch(tk.Tk):
         self.minsize(width=WIDTH, height=HEIGHT)
         self.geometry('+0+800')
         
-        loadfont(str(STOPWATCH_FONT_PATH))
         self.label: tk.Label = tk.Label(
             self,
             text='00',
