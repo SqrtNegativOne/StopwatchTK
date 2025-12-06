@@ -168,6 +168,7 @@ class Stopwatch(tk.Tk):
         match self.state:
             case State.BREAKING: # TODO: Cancel break and start studying again
                 self.state = State.RUNNING
+                self.label.config(fg=LABEL_RUNNING_COLOUR)
                 self.update_display()
             case State.STOPPED:
                 play_sound(ERROR_SOUND_PATH)
