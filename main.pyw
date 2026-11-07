@@ -121,7 +121,7 @@ class Stopwatch(tk.Tk):
         self.bind("<Shift_L><Shift_R>", (lambda event: self.start_stop_break()))
         self.bind("<Right>", (lambda event: self.fast_forward()))
         self.bind("<Left>", (lambda event: self.rewind()))
-        self.bind("<Control_L><Left>", (lambda event: self.reset()))
+        self.bind("<Control-Left>", (lambda event: self.reset()))
         self.bind("<Escape>", (lambda event: self.kill()))
 
         self.x = 0
@@ -331,8 +331,16 @@ class Stopwatch(tk.Tk):
                 self.start_time -= timedelta(seconds=10)
 
     def reset(self) -> None:
-        self.start_time = datetime.now()
-        self.update_display()
+        if self.state == State.BREAKING:
+            # Ctrl+Left zeroes the break countdown, ending the break now.
+            # Set the elapsed time to the full break duration so
+            # update_break_display() runs its normal end-of-break path
+            # (without touching running_time, which update_display() would wipe).
+            self.start_time = datetime.now() - self.remaining_break_time
+            self.update_break_display()
+        else:
+            self.start_time = datetime.now()
+            self.update_display()
 
     def kill(self) -> None:
         if self.state == State.BREAKING:
